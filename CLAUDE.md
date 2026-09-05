@@ -7,6 +7,8 @@
 
 Spec駆動開発 + ハーネスエンジニアリングを前提としたFastAPIプロジェクトテンプレート。
 サンプル機能として商品(Item)のCRUDを実装済み (`specs/001-item-management/`)。
+`admin/` に管理フロントエンド (Next.js) を同梱し、Railway (API+DB) / Vercel
+(フロントエンド) へのデプロイを想定している (`specs/002-admin-frontend/`)。
 
 ## アーキテクチャ
 
@@ -37,7 +39,17 @@ app/db/*          … エンジン/セッションファクトリ
 | `/verify` | ハーネス全体 (lint/型/テスト/契約テスト) を実行して結果を報告 |
 
 `specs/001-item-management/` が実際に実装済みの worked example。新しい機能を
-書く前に一読すると型がわかる。
+書く前に一読すると型がわかる。`specs/002-admin-frontend/` は管理フロントエンド
++ デプロイ設定の実装例。
+
+## 管理フロントエンド (admin/)
+
+FastAPI本体とは独立したNext.js (App Router) プロジェクト。`app/`配下のPythonの
+ハーネス (ruff/mypy/pytest) の対象外で、`admin/`内で完結する
+(`npm run lint` / `npm run build`)。バックエンドへのアクセスはブラウザから直接
+行わず、Server Components / Server Actions がサーバー側でFastAPIを呼ぶ
+(`admin/lib/api.ts`)。`admin/AGENTS.md`(`admin/CLAUDE.md`から読み込まれる)に
+このNext.jsバージョン固有の注意点がある。
 
 ## 開発ハーネス
 
@@ -71,3 +83,10 @@ make migration name="..."  # alembic revision --autogenerate
 
 `.github/workflows/ci.yml`: lint → format check → typecheck → test →
 (成功後) Dockerイメージビルド。ローカルの `make check` と同じ内容を実行する。
+
+## デプロイ
+
+Railway (API + Postgres) / Vercel (`admin/`) 構成。手順は README.md の
+「デプロイ」を参照。`entrypoint.sh` がコンテナ起動時に `alembic upgrade head`
+を実行し、`Settings.database_url` が `postgres(ql)://` 形式を `asyncpg` ドライバ
+向けに自動変換する。
