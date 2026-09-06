@@ -37,6 +37,8 @@ Auth0のEnterprise Connectionを使い、Microsoft Entra ID (Azure AD) を上流
   Entra ID経由のログイン (Enterprise Connection) をそれぞれ選択できる、視認性の
   高いボタンを設けること。Connection名は環境変数で設定可能とし、未設定の場合は
   Entra ID用ボタンを表示しないこと (Stage 1の通常ログインのみになる)。
+- **FR-308**: 管理フロントエンドの未ログイン時のトップページに、GitHubリポジトリ
+  へのリンクと、本認証認可実装の手順書へのリンクを設けること。
 
 ## 非機能要件
 

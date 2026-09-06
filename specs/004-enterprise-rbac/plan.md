@@ -38,6 +38,8 @@ FastAPI側はこのクレームを見て許可/403を判定する。
   表示しない。
 - `admin/app/layout.tsx`: ヘッダーはログイン済み (email + Log out) の場合のみ
   表示する (未ログイン時のログイン導線は上記の通りページ本体側に統一)。
+- `docs/auth-implementation-guide.md` (新規): Stage 1/Stage 2で実施した手順を
+  まとめた実装ガイド。`admin/app/page.tsx`の未ログイン画面からリンクする。
 
 ## Auth0/Azureダッシュボード設定 (ユーザー側の手動作業)
 
@@ -106,4 +108,5 @@ Entra IDログインリンクを表示しない (Stage 1の通常ログインの
 | FR-303, FR-304 | app/core/auth.py, app/api/v1/items.py |
 | FR-305 | 既存の`verify_token`のみを使うエンドポイント (変更なし) |
 | FR-306 | admin/lib/api.ts, admin/app/actions.ts, admin/app/page.tsx |
-| FR-307 | admin/app/layout.tsx |
+| FR-307 | admin/app/page.tsx |
+| FR-308 | admin/app/page.tsx, docs/auth-implementation-guide.md |
