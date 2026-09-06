@@ -110,3 +110,22 @@ FastAPIはAuth0発行のアクセストークン(JWT)をResource Serverとして
 4. フロントエンド (`admin/.env.local` / Vercel) に `AUTH0_DOMAIN` /
    `AUTH0_CLIENT_ID` / `AUTH0_CLIENT_SECRET` / `AUTH0_SECRET` /
    `AUTH0_AUDIENCE` を設定。詳細は `admin/README.md` を参照。
+
+### エンタープライズ連携 + RBAC (Stage 2, 任意)
+
+Microsoft Entra ID (Azure AD) をAuth0のEnterprise Connectionとしてブローカーし、
+ロールに応じて操作を制限する構成 (`specs/004-enterprise-rbac/`)。
+
+1. Azure Portal: Entra ID > アプリの登録 で新規App registrationを作成し、
+   リダイレクトURI `https://<AUTH0_DOMAIN>/login/callback` を登録、クライアント
+   シークレットを発行する。
+2. Auth0 Dashboard: Authentication > Enterprise > Microsoft Entra ID (Azure AD)
+   で新規Connectionを作成し、上記のTenant ID/Client ID/Client Secretを設定。
+   既存の管理フロントエンド用Applicationで有効化する。
+3. Auth0 Dashboard: APIs > (対象のAPI) > RBAC Settings で "Enable RBAC" と
+   "Add Permissions in the Access Token" をONにし、Permissionsタブで
+   `delete:items` を追加する。
+4. Auth0 Dashboard: User Management > Roles で `admin` ロールを作成して
+   `delete:items` を割り当て、削除を許可したいユーザーに割り当てる。
+   このロールを持たない認証済みユーザーが削除しようとした場合、FastAPIは
+   403を返す (作成・更新・参照はロール不問で従来通り)。

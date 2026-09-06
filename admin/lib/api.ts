@@ -17,6 +17,8 @@ export interface ItemInput {
   price: number;
 }
 
+export class ForbiddenError extends Error {}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const fetcher = await auth0.createFetcher(undefined, { baseUrl: API_BASE_URL });
 
@@ -28,7 +30,9 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`${init?.method ?? "GET"} ${path} failed: ${res.status} ${body}`);
+    const message = `${init?.method ?? "GET"} ${path} failed: ${res.status} ${body}`;
+    if (res.status === 403) throw new ForbiddenError(message);
+    throw new Error(message);
   }
 
   return res.status === 204 ? (undefined as T) : ((await res.json()) as T);

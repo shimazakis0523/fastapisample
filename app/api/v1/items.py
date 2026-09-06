@@ -3,12 +3,13 @@ from typing import Annotated, Any
 from fastapi import APIRouter, Depends, Path, Query, status
 
 from app.api.deps import ItemServiceDep
-from app.core.auth import verify_token
+from app.core.auth import require_permission, verify_token
 from app.schemas.item import ItemCreate, ItemRead, ItemUpdate
 
 ResponsesSpec = dict[int | str, dict[str, Any]]
 
 _UNAUTHORIZED_RESPONSE: ResponsesSpec = {401: {"description": "Missing or invalid access token"}}
+_FORBIDDEN_RESPONSE: ResponsesSpec = {403: {"description": "Missing required permission"}}
 
 router = APIRouter(
     prefix="/items",
@@ -66,6 +67,11 @@ async def update_item(item_id: ItemId, data: ItemUpdate, service: ItemServiceDep
     return ItemRead.model_validate(item)
 
 
-@router.delete("/{item_id}", status_code=status.HTTP_204_NO_CONTENT, responses=_NOT_FOUND_RESPONSE)
+@router.delete(
+    "/{item_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(require_permission("delete:items"))],
+    responses={**_NOT_FOUND_RESPONSE, **_FORBIDDEN_RESPONSE},
+)
 async def delete_item(item_id: ItemId, service: ItemServiceDep) -> None:
     await service.delete_item(item_id)

@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireSession } from "@/lib/auth0";
-import { createItem, deleteItem, updateItem } from "@/lib/api";
+import { createItem, deleteItem, ForbiddenError, updateItem } from "@/lib/api";
 
 function readItemInput(formData: FormData) {
   const description = String(formData.get("description") ?? "").trim();
@@ -35,6 +35,13 @@ export async function updateItemAction(formData: FormData): Promise<void> {
 export async function deleteItemAction(formData: FormData): Promise<void> {
   await requireSession();
   const id = Number(formData.get("id"));
-  await deleteItem(id);
+  try {
+    await deleteItem(id);
+  } catch (err) {
+    if (err instanceof ForbiddenError) {
+      redirect("/?error=forbidden");
+    }
+    throw err;
+  }
   revalidatePath("/");
 }

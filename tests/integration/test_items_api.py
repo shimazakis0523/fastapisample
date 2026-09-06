@@ -55,3 +55,16 @@ async def test_requests_with_garbage_token_are_rejected(
     )
 
     assert response.status_code == 401
+
+
+async def test_delete_without_permission_is_forbidden(
+    client_without_delete_permission: AsyncClient,
+) -> None:
+    create_response = await client_without_delete_permission.post(
+        "/api/v1/items", json={"name": "Gadget", "price": 5}
+    )
+    item_id = create_response.json()["id"]
+
+    delete_response = await client_without_delete_permission.delete(f"/api/v1/items/{item_id}")
+
+    assert delete_response.status_code == 403

@@ -41,7 +41,25 @@ async def client(db_session: AsyncSession) -> AsyncIterator[AsyncClient]:
     app.dependency_overrides[get_db_session] = _override_get_db_session
     # These tests exercise CRUD business logic, not Auth0 itself; a real
     # verify_token would need a live JWKS fetch and a genuine signed token.
-    app.dependency_overrides[verify_token] = lambda: {"sub": "test-user"}
+    app.dependency_overrides[verify_token] = lambda: {
+        "sub": "test-user",
+        "permissions": ["delete:items"],
+    }
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        yield ac
+
+
+@pytest_asyncio.fixture
+async def client_without_delete_permission(db_session: AsyncSession) -> AsyncIterator[AsyncClient]:
+    app = create_app()
+
+    async def _override_get_db_session() -> AsyncIterator[AsyncSession]:
+        yield db_session
+
+    app.dependency_overrides[get_db_session] = _override_get_db_session
+    app.dependency_overrides[verify_token] = lambda: {"sub": "test-user", "permissions": []}
 
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:

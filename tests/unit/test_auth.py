@@ -9,7 +9,7 @@ from fastapi import HTTPException
 from fastapi.security import HTTPAuthorizationCredentials
 
 from app.core import auth as auth_module
-from app.core.auth import verify_token
+from app.core.auth import require_permission, verify_token
 
 AUDIENCE = "https://fastapisample-api"
 ISSUER = "https://test-tenant.auth0.com/"
@@ -121,3 +121,25 @@ async def test_malformed_token_is_rejected() -> None:
     with pytest.raises(HTTPException) as exc_info:
         await verify_token(_credentials("not-a-real-token"))
     assert exc_info.value.status_code == 401
+
+
+async def test_require_permission_accepts_user_with_permission() -> None:
+    check = require_permission("delete:items")
+
+    await check({"sub": "test-user", "permissions": ["delete:items", "other:scope"]})
+
+
+async def test_require_permission_rejects_user_without_permission() -> None:
+    check = require_permission("delete:items")
+
+    with pytest.raises(HTTPException) as exc_info:
+        await check({"sub": "test-user", "permissions": ["other:scope"]})
+    assert exc_info.value.status_code == 403
+
+
+async def test_require_permission_rejects_token_without_permissions_claim() -> None:
+    check = require_permission("delete:items")
+
+    with pytest.raises(HTTPException) as exc_info:
+        await check({"sub": "test-user"})
+    assert exc_info.value.status_code == 403

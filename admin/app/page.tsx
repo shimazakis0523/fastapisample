@@ -6,8 +6,9 @@ import { deleteItemAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function ItemsPage() {
+export default async function ItemsPage(props: PageProps<"/">) {
   await requireSession();
+  const { error } = await props.searchParams;
   const items = await listItems();
 
   return (
@@ -21,6 +22,12 @@ export default async function ItemsPage() {
           + New item
         </Link>
       </div>
+
+      {error === "forbidden" && (
+        <p className="mb-4 rounded bg-red-50 px-3 py-2 text-sm text-red-700">
+          You don&apos;t have permission to delete this item.
+        </p>
+      )}
 
       {items.length === 0 ? (
         <p className="text-sm text-neutral-500">No items yet.</p>

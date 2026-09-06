@@ -1,3 +1,4 @@
+from collections.abc import Awaitable, Callable
 from typing import Annotated, Any
 
 import jwt
@@ -32,3 +33,16 @@ async def verify_token(
 
 
 CurrentUser = Annotated[dict[str, Any], Depends(verify_token)]
+
+
+def require_permission(permission: str) -> Callable[[CurrentUser], Awaitable[None]]:
+    """Auth0 RBAC: the access token's `permissions` claim must include `permission`."""
+
+    async def _check(user: CurrentUser) -> None:
+        if permission not in user.get("permissions", []):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail=f"Missing required permission: {permission}",
+            )
+
+    return _check
