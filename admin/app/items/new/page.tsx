@@ -1,4 +1,5 @@
 import { requireSession } from "@/lib/auth0";
+import { SubmitButton } from "@/components/submit-button";
 import { createItemAction } from "../../actions";
 
 export default async function NewItemPage() {
@@ -32,12 +33,12 @@ export default async function NewItemPage() {
             className="rounded border px-2 py-1"
           />
         </label>
-        <button
-          type="submit"
-          className="mt-2 rounded bg-black px-3 py-1.5 text-sm text-white dark:bg-white dark:text-black"
+        <SubmitButton
+          pendingText="Creating…"
+          className="mt-2 rounded bg-black px-3 py-1.5 text-sm text-white disabled:opacity-50 dark:bg-white dark:text-black"
         >
           Create
-        </button>
+        </SubmitButton>
       </form>
     </main>
   );

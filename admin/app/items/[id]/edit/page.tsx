@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { requireSession } from "@/lib/auth0";
 import { getItem } from "@/lib/api";
+import { SubmitButton } from "@/components/submit-button";
 import { updateItemAction } from "../../../actions";
 
 export default async function EditItemPage(props: PageProps<"/items/[id]/edit">) {
@@ -45,12 +46,12 @@ export default async function EditItemPage(props: PageProps<"/items/[id]/edit">)
             className="rounded border px-2 py-1"
           />
         </label>
-        <button
-          type="submit"
-          className="mt-2 rounded bg-black px-3 py-1.5 text-sm text-white dark:bg-white dark:text-black"
+        <SubmitButton
+          pendingText="Saving…"
+          className="mt-2 rounded bg-black px-3 py-1.5 text-sm text-white disabled:opacity-50 dark:bg-white dark:text-black"
         >
           Save
-        </button>
+        </SubmitButton>
       </form>
     </main>
   );

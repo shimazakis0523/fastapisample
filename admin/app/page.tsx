@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { requireSession } from "@/lib/auth0";
 import { listItems } from "@/lib/api";
+import { SubmitButton } from "@/components/submit-button";
 import { deleteItemAction } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -47,9 +48,12 @@ export default async function ItemsPage() {
                   </Link>{" "}
                   <form action={deleteItemAction} className="inline">
                     <input type="hidden" name="id" value={item.id} />
-                    <button type="submit" className="ml-2 text-red-600 underline">
+                    <SubmitButton
+                      pendingText="Deleting…"
+                      className="ml-2 text-red-600 underline disabled:opacity-50"
+                    >
                       Delete
-                    </button>
+                    </SubmitButton>
                   </form>
                 </td>
               </tr>
