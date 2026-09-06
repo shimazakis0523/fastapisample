@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireSession } from "@/lib/auth0";
+import { auth0 } from "@/lib/auth0";
 import { listItems } from "@/lib/api";
 import { SubmitButton } from "@/components/submit-button";
 import { deleteItemAction } from "./actions";
@@ -7,8 +7,21 @@ import { deleteItemAction } from "./actions";
 export const dynamic = "force-dynamic";
 
 export default async function ItemsPage(props: PageProps<"/">) {
-  await requireSession();
+  const session = await auth0.getSession();
   const { error } = await props.searchParams;
+
+  // Unlike the other pages, the root page must not hard-redirect to
+  // /auth/login: doing so would skip rendering the layout's header, which is
+  // the only place the Entra ID login link is offered alongside the regular
+  // one.
+  if (!session) {
+    return (
+      <main className="mx-auto max-w-md p-8">
+        <p className="text-sm text-neutral-500">Please log in to continue.</p>
+      </main>
+    );
+  }
+
   const items = await listItems();
 
   return (

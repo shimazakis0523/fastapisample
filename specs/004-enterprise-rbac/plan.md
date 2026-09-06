@@ -33,6 +33,10 @@ FastAPI側はこのクレームを見て許可/403を判定する。
 - `admin/app/actions.ts` / `admin/app/page.tsx`: 403を捕捉してユーザーへ表示
 - `admin/app/layout.tsx`: 未ログイン時、`AUTH0_ENTERPRISE_CONNECTION`が設定
   されていれば「Log in with Entra ID」リンクを追加表示
+- `admin/app/page.tsx`: `requireSession()`によるハードリダイレクトをやめ、
+  未ログイン時は自身で簡易メッセージを表示するように変更 (リダイレクトすると
+  レイアウトのヘッダー、つまりログインリンクが表示される前に遷移してしまう
+  ため)
 
 ## Auth0/Azureダッシュボード設定 (ユーザー側の手動作業)
 
