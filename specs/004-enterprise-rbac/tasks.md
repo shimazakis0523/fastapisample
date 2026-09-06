@@ -11,4 +11,5 @@
 - [x] 単体テスト: `require_permission`の権限あり/なし/クレーム欠如のケース (対応: FR-304)
 - [x] 統合テスト: `delete:items`権限を持たないトークンでのDELETEが403になることを確認 (対応: FR-304)
 - [x] ドキュメント: README.mdにEnterprise Connection/RBAC設定手順を追加 (対応: FR-301, FR-302)
-- [ ] 手動確認: Entra IDアカウントでのログイン、ロール別の削除可否のE2E確認 (Auth0/Azure側の設定待ち)
+- [x] フロントエンド: `admin/app/layout.tsx`に`AUTH0_ENTERPRISE_CONNECTION`設定時のEntra IDログインリンクを追加 (対応: FR-307)
+- [ ] 手動確認: Entra IDアカウントでのログイン、ロール別の削除可否のE2E確認 (admin役割付与後の削除成功確認待ち)

@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const session = await auth0.getSession();
+  const enterpriseConnection = process.env.AUTH0_ENTERPRISE_CONNECTION;
 
   return (
     <html lang="en" className="h-full antialiased">
@@ -22,9 +23,19 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
               </a>
             </>
           ) : (
-            <a href="/auth/login" className="underline">
-              Log in
-            </a>
+            <>
+              <a href="/auth/login" className="underline">
+                Log in
+              </a>
+              {enterpriseConnection && (
+                <a
+                  href={`/auth/login?connection=${encodeURIComponent(enterpriseConnection)}`}
+                  className="underline"
+                >
+                  Log in with Entra ID
+                </a>
+              )}
+            </>
           )}
         </header>
         {children}

@@ -29,6 +29,11 @@ Auth0テナントで以下を作成し、`.env.local`に設定する:
 バックエンド側 (`../`) の`.env`にも`AUTH0_DOMAIN`/`AUTH0_AUDIENCE`を設定すること
 (この2つはフロントエンドと同じ値)。
 
+Entra ID (Azure AD) のEnterprise Connectionを設定済みの場合、`.env.local`の
+`AUTH0_ENTERPRISE_CONNECTION`にそのConnection名を設定すると、未ログイン時の
+ヘッダーに「Log in with Entra ID」リンクが表示される (未設定なら非表示、通常の
+ログインのみ)。
+
 ## コマンド
 
 ```bash

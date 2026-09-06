@@ -129,3 +129,10 @@ Microsoft Entra ID (Azure AD) をAuth0のEnterprise Connectionとしてブロー
    `delete:items` を割り当て、削除を許可したいユーザーに割り当てる。
    このロールを持たない認証済みユーザーが削除しようとした場合、FastAPIは
    403を返す (作成・更新・参照はロール不問で従来通り)。
+5. 管理フロントエンドの環境変数 `AUTH0_ENTERPRISE_CONNECTION` に、手順2で
+   作成したConnection名を設定すると、未ログイン時のヘッダーに
+   「Log in with Entra ID」リンクが表示される。
+
+同じメールアドレスでも、通常ログイン (Username-Password) とEntra ID経由の
+ログインはAuth0上で別ユーザー扱いになる。Entra ID経由でログインしたユーザーにも
+別途 `admin` ロールを割り当てる必要がある。

@@ -31,6 +31,8 @@ FastAPI側はこのクレームを見て許可/403を判定する。
   `Depends(require_permission("delete:items"))` を追加
 - `admin/lib/api.ts`: 403を判別できる`ForbiddenError`を追加
 - `admin/app/actions.ts` / `admin/app/page.tsx`: 403を捕捉してユーザーへ表示
+- `admin/app/layout.tsx`: 未ログイン時、`AUTH0_ENTERPRISE_CONNECTION`が設定
+  されていれば「Log in with Entra ID」リンクを追加表示
 
 ## Auth0/Azureダッシュボード設定 (ユーザー側の手動作業)
 
@@ -68,6 +70,12 @@ FastAPI側はこのクレームを見て許可/403を判定する。
 - `admin/app/page.tsx`: `searchParams`の`error=forbidden`を見て、削除失敗を
   伝えるメッセージを一覧画面に表示する。
 
+## 環境変数
+
+フロントエンド (`admin/.env.local` / Vercel) に `AUTH0_ENTERPRISE_CONNECTION`
+(Auth0で作成したEnterprise ConnectionのConnection名) を追加する。未設定なら
+Entra IDログインリンクを表示しない (Stage 1の通常ログインのみ動作する後方互換)。
+
 ## エラーハンドリング
 
 - 権限不足での削除: FastAPIは403。フロントエンドは汎用エラー画面に落とさず、
@@ -93,3 +101,4 @@ FastAPI側はこのクレームを見て許可/403を判定する。
 | FR-303, FR-304 | app/core/auth.py, app/api/v1/items.py |
 | FR-305 | 既存の`verify_token`のみを使うエンドポイント (変更なし) |
 | FR-306 | admin/lib/api.ts, admin/app/actions.ts, admin/app/page.tsx |
+| FR-307 | admin/app/layout.tsx |
