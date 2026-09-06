@@ -31,12 +31,13 @@ FastAPI側はこのクレームを見て許可/403を判定する。
   `Depends(require_permission("delete:items"))` を追加
 - `admin/lib/api.ts`: 403を判別できる`ForbiddenError`を追加
 - `admin/app/actions.ts` / `admin/app/page.tsx`: 403を捕捉してユーザーへ表示
-- `admin/app/layout.tsx`: 未ログイン時、`AUTH0_ENTERPRISE_CONNECTION`が設定
-  されていれば「Log in with Entra ID」リンクを追加表示
 - `admin/app/page.tsx`: `requireSession()`によるハードリダイレクトをやめ、
-  未ログイン時は自身で簡易メッセージを表示するように変更 (リダイレクトすると
-  レイアウトのヘッダー、つまりログインリンクが表示される前に遷移してしまう
-  ため)
+  未ログイン時は自身で「Log in」「Log in with Entra ID」の2つのボタンを表示
+  するように変更 (リダイレクトすると、これらのボタンが表示される前に遷移して
+  しまうため)。`AUTH0_ENTERPRISE_CONNECTION`が未設定ならEntra ID用ボタンは
+  表示しない。
+- `admin/app/layout.tsx`: ヘッダーはログイン済み (email + Log out) の場合のみ
+  表示する (未ログイン時のログイン導線は上記の通りページ本体側に統一)。
 
 ## Auth0/Azureダッシュボード設定 (ユーザー側の手動作業)
 

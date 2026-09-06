@@ -11,13 +11,30 @@ export default async function ItemsPage(props: PageProps<"/">) {
   const { error } = await props.searchParams;
 
   // Unlike the other pages, the root page must not hard-redirect to
-  // /auth/login: doing so would skip rendering the layout's header, which is
-  // the only place the Entra ID login link is offered alongside the regular
-  // one.
+  // /auth/login: doing so would skip rendering this page's own login
+  // buttons entirely.
   if (!session) {
+    const enterpriseConnection = process.env.AUTH0_ENTERPRISE_CONNECTION;
     return (
-      <main className="mx-auto max-w-md p-8">
+      <main className="mx-auto flex max-w-md flex-col items-center gap-6 p-8 text-center">
+        <h1 className="text-2xl font-semibold">fastapisample admin</h1>
         <p className="text-sm text-neutral-500">Please log in to continue.</p>
+        <div className="flex w-full flex-col gap-3">
+          <a
+            href="/auth/login"
+            className="rounded bg-black px-4 py-2 text-sm text-white dark:bg-white dark:text-black"
+          >
+            Log in
+          </a>
+          {enterpriseConnection && (
+            <a
+              href={`/auth/login?connection=${encodeURIComponent(enterpriseConnection)}`}
+              className="rounded border border-black px-4 py-2 text-sm dark:border-white"
+            >
+              Log in with Entra ID
+            </a>
+          )}
+        </div>
       </main>
     );
   }
