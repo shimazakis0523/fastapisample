@@ -35,12 +35,15 @@ export default async function ItemsPage(props: PageProps<"/">) {
             </a>
           )}
         </div>
-        <div className="flex gap-4 text-xs text-neutral-500">
+        <div className="flex w-full flex-col gap-2 rounded border p-4 text-left">
+          <p className="text-xs font-semibold tracking-wide text-neutral-400 uppercase">
+            Resources
+          </p>
           <a
             href="https://github.com/shimazakis0523/fastapisample"
             target="_blank"
             rel="noopener noreferrer"
-            className="underline"
+            className="text-sm font-medium underline"
           >
             GitHub repository
           </a>
@@ -48,7 +51,7 @@ export default async function ItemsPage(props: PageProps<"/">) {
             href="https://github.com/shimazakis0523/fastapisample/blob/claude/optimistic-sagan-corhnd/docs/auth-implementation-guide.md"
             target="_blank"
             rel="noopener noreferrer"
-            className="underline"
+            className="text-sm font-medium underline"
           >
             認証認可の実装手順
           </a>
