@@ -24,7 +24,7 @@ export default async function ItemsPage(props: PageProps<"/">) {
             href="/auth/login"
             className="rounded bg-black px-4 py-2 text-sm text-white dark:bg-white dark:text-black"
           >
-            Log in
+            Auth0でログイン
           </a>
           {enterpriseConnection && (
             <a
