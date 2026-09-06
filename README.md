@@ -33,6 +33,10 @@ make run          # http://localhost:8000 (docs: /docs, health: /health)
 デフォルトの `DATABASE_URL` は SQLite (`sqlite+aiosqlite:///./app.db`)。
 Postgresでの起動には `docker compose up` を使う。
 
+`/api/v1/items` は全エンドポイントで認証が必須 (下記「認証」参照)。
+`AUTH0_DOMAIN`/`AUTH0_AUDIENCE` を設定しないと全リクエストが401になる
+(fail-closed設計)。
+
 ## よく使うコマンド
 
 ```bash
@@ -91,3 +95,18 @@ specs/          # spec駆動開発の成果物 (constitution / テンプレー�
 3. 環境変数 `API_BASE_URL` に、Railwayにデプロイしたバックエンドの公開URLを設定
    (ブラウザには公開されないサーバー専用の変数)。
 4. デプロイ後、Railway側の `CORS_ORIGINS` にこのVercel URLを追加する。
+
+## 認証 (Auth0)
+
+OAuth2/OIDCによる認証を、Auth0をIdPとして実装している
+(`specs/003-auth0-authentication/`)。管理フロントエンドでログインし、
+FastAPIはAuth0発行のアクセストークン(JWT)をResource Serverとして検証する。
+
+1. Auth0テナントで **API** を作成 (Identifier例: `https://fastapisample-api`)。
+2. **Application** (Regular Web Application) を作成し、Domain/Client ID/
+   Client Secretを取得。Callback URL・Logout URLを`admin/`側の実行先に合わせて
+   登録する。
+3. バックエンド (`.env` / Railway) に `AUTH0_DOMAIN` / `AUTH0_AUDIENCE` を設定。
+4. フロントエンド (`admin/.env.local` / Vercel) に `AUTH0_DOMAIN` /
+   `AUTH0_CLIENT_ID` / `AUTH0_CLIENT_SECRET` / `AUTH0_SECRET` /
+   `AUTH0_AUDIENCE` を設定。詳細は `admin/README.md` を参照。

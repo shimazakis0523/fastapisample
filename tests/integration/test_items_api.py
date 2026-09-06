@@ -39,3 +39,19 @@ async def test_create_item_validation_error(client: AsyncClient) -> None:
     response = await client.post("/api/v1/items", json={"name": "", "price": -1})
 
     assert response.status_code == 422
+
+
+async def test_requests_without_token_are_rejected(unauthenticated_client: AsyncClient) -> None:
+    response = await unauthenticated_client.get("/api/v1/items")
+
+    assert response.status_code == 401
+
+
+async def test_requests_with_garbage_token_are_rejected(
+    unauthenticated_client: AsyncClient,
+) -> None:
+    response = await unauthenticated_client.get(
+        "/api/v1/items", headers={"Authorization": "Bearer not-a-real-token"}
+    )
+
+    assert response.status_code == 401

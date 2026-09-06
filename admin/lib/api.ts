@@ -1,3 +1,5 @@
+import { auth0 } from "@/lib/auth0";
+
 const API_BASE_URL = process.env.API_BASE_URL ?? "http://localhost:8000";
 
 export interface Item {
@@ -16,7 +18,9 @@ export interface ItemInput {
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE_URL}${path}`, {
+  const fetcher = await auth0.createFetcher(undefined, { baseUrl: API_BASE_URL });
+
+  const res = await fetcher.fetchWithAuth(path, {
     cache: "no-store",
     ...init,
     headers: { "Content-Type": "application/json", ...init?.headers },

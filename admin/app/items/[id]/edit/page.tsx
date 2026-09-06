@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
+import { requireSession } from "@/lib/auth0";
 import { getItem } from "@/lib/api";
 import { updateItemAction } from "../../../actions";
 
 export default async function EditItemPage(props: PageProps<"/items/[id]/edit">) {
+  await requireSession();
   const { id } = await props.params;
 
   const item = await getItem(Number(id)).catch(() => null);

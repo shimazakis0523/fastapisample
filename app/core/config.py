@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     # Comma-separated: managed-Postgres/PaaS env vars are plain strings, not JSON.
     cors_origins: str = "http://localhost:3000"
+    # Empty by default so a missing config fails closed (verify_token rejects
+    # every request) rather than silently accepting unsigned/unverifiable tokens.
+    auth0_domain: str = ""
+    auth0_audience: str = ""
 
     @field_validator("database_url", mode="after")
     @classmethod

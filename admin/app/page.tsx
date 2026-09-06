@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { requireSession } from "@/lib/auth0";
 import { listItems } from "@/lib/api";
 import { deleteItemAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function ItemsPage() {
+  await requireSession();
   const items = await listItems();
 
   return (

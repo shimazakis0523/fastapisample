@@ -1,6 +1,9 @@
+import { requireSession } from "@/lib/auth0";
 import { createItemAction } from "../../actions";
 
-export default function NewItemPage() {
+export default async function NewItemPage() {
+  await requireSession();
+
   return (
     <main className="mx-auto max-w-md p-8">
       <h1 className="mb-6 text-2xl font-semibold">New item</h1>

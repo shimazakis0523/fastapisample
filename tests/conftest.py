@@ -6,6 +6,7 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.pool import StaticPool
 
+from app.core.auth import verify_token
 from app.db.base import Base
 from app.db.session import get_db_session
 from app.main import create_app
@@ -32,6 +33,23 @@ async def db_session() -> AsyncIterator[AsyncSession]:
 
 @pytest_asyncio.fixture
 async def client(db_session: AsyncSession) -> AsyncIterator[AsyncClient]:
+    app = create_app()
+
+    async def _override_get_db_session() -> AsyncIterator[AsyncSession]:
+        yield db_session
+
+    app.dependency_overrides[get_db_session] = _override_get_db_session
+    # These tests exercise CRUD business logic, not Auth0 itself; a real
+    # verify_token would need a live JWKS fetch and a genuine signed token.
+    app.dependency_overrides[verify_token] = lambda: {"sub": "test-user"}
+
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        yield ac
+
+
+@pytest_asyncio.fixture
+async def unauthenticated_client(db_session: AsyncSession) -> AsyncIterator[AsyncClient]:
     app = create_app()
 
     async def _override_get_db_session() -> AsyncIterator[AsyncSession]:

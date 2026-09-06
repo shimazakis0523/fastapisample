@@ -1,13 +1,21 @@
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Path, Query, status
+from fastapi import APIRouter, Depends, Path, Query, status
 
 from app.api.deps import ItemServiceDep
+from app.core.auth import verify_token
 from app.schemas.item import ItemCreate, ItemRead, ItemUpdate
 
-router = APIRouter(prefix="/items", tags=["items"])
-
 ResponsesSpec = dict[int | str, dict[str, Any]]
+
+_UNAUTHORIZED_RESPONSE: ResponsesSpec = {401: {"description": "Missing or invalid access token"}}
+
+router = APIRouter(
+    prefix="/items",
+    tags=["items"],
+    dependencies=[Depends(verify_token)],
+    responses=_UNAUTHORIZED_RESPONSE,
+)
 
 _NOT_FOUND_RESPONSE: ResponsesSpec = {404: {"description": "Item not found"}}
 # Starlette rejects a syntactically invalid JSON body itself, before FastAPI's
